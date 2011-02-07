@@ -4,5 +4,7 @@
 task :default => [:test]
 
 task :test do
-  ruby "lib/test/path.rb"
+  Dir.glob("lib/test/*.rb").each {|test_file|
+    ruby test_file
+  }
 end
