@@ -5,6 +5,16 @@
 # This utility will generate eval-able shell code to set various shell
 # environment variables, etc.
 
+# set this up to load from ./lib relative to the executable location
+# of this script.  Nota bene: This probably wants to change in the
+# future, when we can expect our libraries to actually be installed or
+# something.  For now, I'm just wanting a symlink from my ~/bin/ to my
+# git checkout to still import the libraries OK.
+require 'pathname' # because there's no File.realpath in older ruby versions
+$LOAD_PATH << File.join(Pathname.new(__FILE__).realpath.to_s, "/../lib")
+
+require 'cdenv/path.rb'
+
 # very rudimentary arg-handling at present.  Fortunately, we should
 # normally be being called by our own function, and thus it shouldn't
 # matter too much.  For now.  Later, we'll want to be much smarter
