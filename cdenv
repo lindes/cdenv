@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby -w
+
+# cdenv -- the main workhorse for the cdenv shell functionality.
+#
+# This utility will generate eval-able shell code to set various shell
+# environment variables, etc.
+
+# very rudimentary arg-handling at present.  Fortunately, we should
+# normally be being called by our own function, and thus it shouldn't
+# matter too much.  For now.  Later, we'll want to be much smarter
+# about this, and allow various other options for debugging things,
+# setting environments, etc.
+mode = ARGV.shift
+new = ARGV.shift
+old = ARGV.shift
+
+# until I actually do something good with these arguments, spew them to stderr:
+STDERR.puts [mode, new, old].inspect
+
+# the name of the old file:
+oldfile = "#{old}/.cdenv"
+# and the new one (could reference #{new}, but don't really need to):
+newfile = ".cdenv"
+
+# code for rewinding:
+def backwards(line)
+  STDERR.puts("Sorry, cdenv doesn't know how to handle: #{line}")
+end
+
+# code for playing forward:
+def forwards(line)
+  STDERR.puts("Sorry, cdenv doesn't know how to handle: #{line}")
+end
+
+# first, rewind any changes from OLDPWD:
+if(File.exists?(oldfile)) then
+  STDERR.puts("--=> Found a cdenv in OLD dir, rewinding it")
+  File.open(oldfile).each do |line|
+    backwards(line)
+  end
+end
+
+# and then, play changes from this PWD:
+if(File.exists?('.cdenv')) then
+  STDERR.puts("++=> Found a cdenv in new dir, playing it forward")
+  File.open('.cdenv').each do |line|
+    forwards(line)
+  end
+end

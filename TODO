@@ -1,0 +1,3 @@
+- add support for other shells (bash, ksh, sh, even csh and tcsh?)
+- allow configuration at root of homedir, applying elsewhere (.ini style??)
+- allow command-line based manipulation of configuration
