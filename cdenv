@@ -32,21 +32,33 @@ oldfile = "#{old}/.cdenv"
 # and the new one (could reference #{new}, but don't really need to):
 newfile = ".cdenv"
 
+def find_and_run(method_name, input)
+  if(method = CDENV.find_method(method_name))
+    eval_string = method.call(input)
+    STDERR.puts(eval_string) # for the user to see
+    puts(eval_string)        # for the shell to execute
+  else
+    STDERR.puts("Sorry, cdenv doesn't know how to handle: #{method_name}: #{input}")
+  end
+end
+
 # code for rewinding:
 def backwards(line)
-  STDERR.puts("Sorry, cdenv doesn't know how to handle: #{line}")
+  (method, input) = line.split(/:\s*/)
+  find_and_run("rewind_#{method}", input)
 end
 
 # code for playing forward:
 def forwards(line)
-  STDERR.puts("Sorry, cdenv doesn't know how to handle: #{line}")
+  (method, input) = line.split(/:\s*/)
+  find_and_run(method, input)
 end
 
 # first, rewind any changes from OLDPWD:
 if(File.exists?(oldfile)) then
   STDERR.puts("--=> Found a cdenv in OLD dir, rewinding it")
   File.open(oldfile).each do |line|
-    backwards(line)
+    backwards(line.chomp)
   end
 end
 
@@ -54,6 +66,6 @@ end
 if(File.exists?('.cdenv')) then
   STDERR.puts("++=> Found a cdenv in new dir, playing it forward")
   File.open('.cdenv').each do |line|
-    forwards(line)
+    forwards(line.chomp)
   end
 end
