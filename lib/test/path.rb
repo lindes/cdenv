@@ -9,4 +9,10 @@ class TestCDENVPath < Test::Unit::TestCase
     ENV['PATH'] = '/opt/local/bin'
     assert_equal("PATH=/bin:/opt/local/bin", CDENV::Path.prepend_path('/bin'))
   end
+
+  def test_rewind_prepend_path
+    assert_equal("PATH=/usr/local/bin", CDENV::Path.rewind_prepend_path('/bin', '/usr/local/bin'))
+    ENV['PATH'] = '/opt/local/bin'
+    assert_equal("PATH=/opt/local/bin", CDENV::Path.rewind_prepend_path('/bin'))
+  end
 end
