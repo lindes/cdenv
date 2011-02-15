@@ -1,5 +1,5 @@
-Inspired by some tools I've seen at companies past, `cdenv` is a
-utility (or really, set of utilities) for managing changes to such
+Inspired by some tools I've seen at companies past, `cdenv` is (to be)
+a utility (or really, set of utilities) for managing changes to such
 things as environment variables (though it's not limited to that) upon
 execution of a `cd` command in the shell (change directories).
 
@@ -14,3 +14,11 @@ on which source tree you're in, to use appropriate cross-compilers
 and/or toolchains.  Recently, I've been motivated to finally write
 these tools by the release of Rails 3, while I'm also maintaining
 various sites that still use previous versions of rails.)
+
+This utility is currently still in its infancy, nominally supporting thus far:
+
+- zsh syntax for the following
+- prepending an item to one's PATH, and then un-appending it when
+  leaving the directory.
+
+See the TODO file for the various things still needing to be done.
