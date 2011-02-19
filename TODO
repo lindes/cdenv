@@ -1,7 +1,7 @@
-- add support for other shells (bash, ksh, sh, even csh and tcsh?)
 - allow configuration at root of homedir, applying elsewhere (.ini style??)
 - allow command-line based manipulation of configuration
 - allow changes to track through subdirs, i.e. a change in /foo/bar
   still is left applied in foo/bar/baz, unless a new .cdenv file is
   found there
 - config type add_alias, e.g. add_alias: bi='sudo -v; bundle install'
+- support pushd and popd, in addition to cd, for zsh and bash

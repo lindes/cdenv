@@ -4,6 +4,10 @@
 #
 # This utility will generate eval-able shell code to set various shell
 # environment variables, etc.
+#
+# set up your shell to use this with:
+#  eval "`cdenv -i`"
+# (Put this in .zshrc, .bashrc, or the like, per your shell)
 
 # set this up to load from ./lib relative to the executable location
 # of this script.  Nota bene: This probably wants to change in the
@@ -15,22 +19,59 @@ $LOAD_PATH << File.join(Pathname.new(__FILE__).realpath.to_s, "/../lib")
 
 require 'cdenv'
 
-# very rudimentary arg-handling at present.  Fortunately, we should
-# normally be being called by our own function, and thus it shouldn't
-# matter too much.  For now.  Later, we'll want to be much smarter
-# about this, and allow various other options for debugging things,
-# setting environments, etc.
-mode = ARGV.shift
-new = ARGV.shift
+require 'optparse'
+
+options = {
+  :shell   => :auto,
+  :from    => nil,
+  :to      => nil,
+  :status  => false,
+  :install => nil,    # or true/false -- false == uninstall
+  :quiet   => nil,    # true = quiet, false = verbose
+}
+
+optparse = OptionParser.new do |opts|
+  opts.on( '-z', '--zsh',     "Use ZSH syntax" )                          { options[:shell]   = :zsh }
+  opts.on( '-b', '--bash',    "Use Bash syntax" )                         { options[:shell]   = :bash }
+  opts.on( nil,  '--generic', "Use generic SH-derivative syntax" )        { options[:shell]   = :generic }
+  opts.on( '-a', '--auto',    "Auto-detect shell (default)" )             { options[:shell]   = :auto }
+  opts.on( '-s', '--status',  "Get status info" )                         { options[:status]  = true }
+  opts.on( '-i', '--init',    "Generate initialization code" )            { options[:install] = true }
+  opts.on( '-u', '--un-init', "Generate un-initialize (stop using)" )     { options[:install] = false }
+  opts.on( '-q', '--quiet',   "Be quiet (disables verbose)" )             { options[:quiet]   = true }
+  opts.on( '-v', '--verbose', "Be verbose (disables quiet)" )             { options[:quiet]   = false }
+  opts.on( '-h', '--help',    "Display this screen" ) do
+    STDERR.puts opts
+    exit
+  end
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::InvalidOption
+  STDERR.puts optparse
+  exit 1
+end
+
+if(options[:shell] == :auto)
+  options[:shell] = CDENV.auto_detect_shell
+end
+
+unless(options[:install].nil?)
+  CDENV.do_install_or_uninstall(options[:shell], options[:install], options[:quiet])
+  exit
+end
+
 old = ARGV.shift
+new = ARGV.shift
 
 # until I actually do something good with these arguments, spew them to stderr:
-STDERR.puts [mode, new, old].inspect
+# STDERR.puts [options[:shell], new, old].inspect unless options[:quiet]
 
 # the name of the old file:
 oldfile = "#{old}/.cdenv"
-# and the new one (could reference #{new}, but don't really need to):
-newfile = ".cdenv"
+# and the new one (referencing #{new}, though we may not really need to)
+newfile = "#{new}/.cdenv"
 
 def find_and_run(method_name, input)
   if(method = CDENV.find_method(method_name))
@@ -63,9 +104,9 @@ if(File.exists?(oldfile)) then
 end
 
 # and then, play changes from this PWD:
-if(File.exists?('.cdenv')) then
+if(File.exists?(newfile)) then
   STDERR.puts("++=> Found a cdenv in new dir, playing it forward")
-  File.open('.cdenv').each do |line|
+  File.open(newfile).each do |line|
     forwards(line.chomp)
   end
 end
