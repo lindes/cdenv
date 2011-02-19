@@ -1,4 +1,5 @@
 require 'cdenv/path'
+require 'cdenv/parser'
 
 module CDENV
 

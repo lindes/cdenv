@@ -16,7 +16,6 @@
 # git checkout to still import the libraries OK.
 require 'pathname' # because there's no File.realpath in older ruby versions
 $LOAD_PATH << File.join(Pathname.new(__FILE__).realpath.to_s, "/../lib")
-
 require 'cdenv'
 
 require 'optparse'
@@ -85,13 +84,13 @@ end
 
 # code for rewinding:
 def backwards(line)
-  (method, input) = line.split(/:\s*/)
+  (method, input) = CDENV::Parser.parse(line)
   find_and_run("rewind_#{method}", input)
 end
 
 # code for playing forward:
 def forwards(line)
-  (method, input) = line.split(/:\s*/)
+  (method, input) = CDENV::Parser.parse(line)
   find_and_run(method, input)
 end
 
