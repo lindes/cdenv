@@ -19,6 +19,8 @@ $LOAD_PATH << File.join(Pathname.new(__FILE__).realpath.to_s, "/../lib")
 require 'cdenv'
 
 require 'optparse'
+require 'term/ansicolor'
+include Term::ANSIColor
 
 options = {
   :shell   => :auto,
@@ -96,16 +98,18 @@ end
 
 # first, rewind any changes from OLDPWD:
 if(File.exists?(oldfile)) then
-  STDERR.puts("--=> Found a cdenv in OLD dir, rewinding it")
+  STDERR.puts(red + "--=> Found a cdenv in OLD dir, rewinding it" + yellow)
   File.open(oldfile).each do |line|
     backwards(line.chomp)
   end
+  STDERR.write(reset)
 end
 
 # and then, play changes from this PWD:
 if(File.exists?(newfile)) then
-  STDERR.puts("++=> Found a cdenv in new dir, playing it forward")
+  STDERR.puts(green + "++=> Found a cdenv in new dir, playing it forward" + cyan)
   File.open(newfile).each do |line|
     forwards(line.chomp)
   end
+  STDERR.write(reset)
 end
