@@ -43,6 +43,10 @@ optparse = OptionParser.new do |opts|
   opts.on( '-v', '--verbose', "Be verbose (disables quiet)" )             { options[:quiet]   = false }
   opts.on( '-h', '--help',    "Display this screen" ) do
     STDERR.puts opts
+    STDERR.puts "--- example .cdenv follows ---"
+    STDERR.puts "prepend_path: /some/dir/i/want/to/look/first/in"
+    STDERR.puts "env: ARBITRARY=environment_variable_without_quoting"
+
     exit
   end
 end
