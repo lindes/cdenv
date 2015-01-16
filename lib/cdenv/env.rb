@@ -14,7 +14,7 @@ module CDENV
       rest += "" # unused
       old = ENV["#{name}"]
       # STDERR.puts "in CDENV::Env.rewind_env; name=#{name}; rest=#{rest}; old=#{old}"
-      return "_cdenv_env_old_#{name}='#{old}' export _cdenv_env_old_#{name}\n#{arg}"
+      return "_cdenv_env_old_#{name}='#{old}' export _cdenv_env_old_#{name}\n#{arg} export #{name}"
     end
 
     def self.rewind_env(arg)
